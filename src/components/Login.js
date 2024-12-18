@@ -37,7 +37,7 @@ const Login = () => {
           <input
             type="text"
             id="name"
-            className=" p-2 bg-slate-600 w-full"
+            className=" p-2 bg-slate-600 w-full text-white font-medium"
             placeholder="Name"
             required
           />
@@ -46,7 +46,7 @@ const Login = () => {
           ref={email}
           type="email"
           id="Email"
-          className=" p-2 bg-slate-600 w-full"
+          className=" p-2 bg-slate-600 w-full text-white font-medium"
           placeholder="Email"
           required
         />
@@ -54,7 +54,7 @@ const Login = () => {
         ref={password}
           type="password"
           id="password"
-          className=" p-2 bg-slate-600 w-full"
+          className=" p-2 bg-slate-600 w-full text-white font-medium"
           placeholder="password"
           required
         />
@@ -62,10 +62,10 @@ const Login = () => {
           <input
             type="password"
             id="confirmpassword"
-            className=" p-2 bg-slate-600 w-full"
+            className=" p-2 bg-slate-600 w-full text-white font-medium"
             placeholder="Confirm password"
             required
-          />
+          /> 
         )}
         <button type="submit" className="bg-red-500 p-2 text-white font-medium w-full">
           {isSignIn ? "Sign In" : "Sign Up"}
