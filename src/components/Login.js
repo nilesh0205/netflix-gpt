@@ -4,16 +4,21 @@ import { validate } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { setUser } from "../utils/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isSignIn, setSignIn] = useState(false);
   const email = useRef();
   const password = useRef();
+  const name = useRef();
   const [isError, setIsError] = useState(null);
-  console.log("isError", isError);
-  console.log("email,password", email, password);
 
   const handleSubmit = () => {
     console.log("yes");
@@ -23,18 +28,22 @@ const Login = () => {
     if (showError) return;
 
     if (isSignIn) {
-      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log("🚀 ~ .then ~ user:", user);
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        setIsError(errorMessage);
-      });
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          navigate("/browser");
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setIsError(errorMessage);
+        });
     }
 
     if (!isSignIn) {
@@ -45,16 +54,30 @@ const Login = () => {
         password.current.value
       )
         .then((userCredential) => {
-          // Signed up
-          const user = userCredential.user;
-          console.log("user", user);
-          // ...
+          const user = userCredential.user;  
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL:
+              "https://upload.wikimedia.org/wikipedia/commons/e/ef/Virat_Kohli_during_the_India_vs_Aus_4th_Test_match_at_Narendra_Modi_Stadium_on_09_March_2023.jpg",
+          });
+        })
+        .then(() => {
+          const { uid, email, displayName,photoURL } = auth.currentUser;
+          dispatch(
+            setUser({
+              uid: uid,
+              email: email,
+              displayName: displayName,
+              photoURL: photoURL,
+            })
+          );
+          navigate("/browser");
+
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           setIsError(errorMessage);
-
           // ..
         });
     }
@@ -80,6 +103,7 @@ const Login = () => {
         </h4>
         {!isSignIn && (
           <input
+            ref={name}
             type="text"
             id="name"
             className=" p-2 bg-slate-600 w-full text-white font-medium"
