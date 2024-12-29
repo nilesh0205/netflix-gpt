@@ -12,7 +12,6 @@ import { setUser } from "../utils/userSlice";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isSignIn, setSignIn] = useState(false);
   const email = useRef();
@@ -21,9 +20,7 @@ const Login = () => {
   const [isError, setIsError] = useState(null);
 
   const handleSubmit = () => {
-    console.log("yes");
     const showError = validate(email.current.value, password.current.value);
-    console.log("showError", showError);
     setIsError(showError);
     if (showError) return;
 
@@ -36,7 +33,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          navigate("/browser");
           // ...
         })
         .catch((error) => {
@@ -47,7 +43,6 @@ const Login = () => {
     }
 
     if (!isSignIn) {
-      console.log("yessIn");
       createUserWithEmailAndPassword(
         auth,
         email.current.value,
@@ -55,7 +50,7 @@ const Login = () => {
       )
         .then((userCredential) => {
           const user = userCredential.user;  
-          updateProfile(user, {
+          return updateProfile(user, {
             displayName: name.current.value,
             photoURL:
               "https://upload.wikimedia.org/wikipedia/commons/e/ef/Virat_Kohli_during_the_India_vs_Aus_4th_Test_match_at_Narendra_Modi_Stadium_on_09_March_2023.jpg",
@@ -71,7 +66,6 @@ const Login = () => {
               photoURL: photoURL,
             })
           );
-          navigate("/browser");
 
         })
         .catch((error) => {
